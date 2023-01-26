@@ -1,7 +1,5 @@
 import express from "express";
 import cors from "cors";
-import { GoogleSpreadsheet } from "google-spreadsheet";
-import drive from "./services/auth-service/auth.js";
 import dotenv from "dotenv";
 import { financesRouter } from "./routers/index.js";
 
