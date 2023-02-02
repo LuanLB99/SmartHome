@@ -1,5 +1,4 @@
 import { google } from "googleapis";
-import { credentials } from "./credentials.js";
 import { GoogleSpreadsheet } from "google-spreadsheet";
 import dotenv from "dotenv";
 

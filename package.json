@@ -18,6 +18,7 @@
     "google-spreadsheet": "^3.3.0",
     "googleapis": "^110.0.0",
     "install": "^0.13.0",
+    "localtunnel": "^2.0.2",
     "npm": "^9.3.1"
   }
 }

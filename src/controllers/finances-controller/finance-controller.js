@@ -3,6 +3,7 @@ import drive, {
   useServiceAccountAuth,
 } from "../../services/auth-service/auth.js";
 import { GoogleSpreadsheet } from "google-spreadsheet";
+import addSpent from "../../services/finance-service/finance-service.js";
 
 export async function listSheets(req, res) {
   try {
@@ -16,38 +17,25 @@ export async function listSheets(req, res) {
   }
 }
 
-export async function listSheetByName(req, res) {
-  const name = "Mais Novo Integrante";
+export async function addNewSpent(req, res) {
+  const { Despesa, Forma_de_Pagamento, Valor, Nome_do_Favorecido } = req.body;
+
+  const planilha = "Mais Novo Integrante";
+
   try {
-    const files = await drive.files.list();
-
-    const spreadsheet = files.data.files;
-
-    const archive = spreadsheet.find((i) => i.name === name);
-
-    const document = await useServiceAccountAuth(archive.id);
-
-    const sheetIndex = document.sheetsByIndex.findIndex(
-      (i) => i.title === "New Sheet"
+    const newSpent = await addSpent(
+      planilha,
+      Despesa,
+      Forma_de_Pagamento,
+      Valor,
+      Nome_do_Favorecido
     );
-    if (sheetIndex === -1) {
-      throw {
-        message: "Sheet not found",
-      };
-    }
-
-    const sheet = document.sheetsByIndex[sheetIndex];
-    const rows = await sheet.getRows();
-    const novaDespesa = await sheet.addRow({
-      Despesa: "Cortezinho da Massa",
-      Data_Pagamento: "20/08/2023",
-      Forma_de_Pagamento: "Cartão",
-      Valor_a_Pagar: 285,
-      Nome_do_Favorecido: "Calos Batista Jr",
-    });
-    return res.send(novaDespesa);
+    return res.status(200).send(newSpent);
   } catch (error) {
-    return res.send(error);
+    if (error.name === "Error to update row") {
+      return res.sendStatus(400);
+    }
+    return res.sendStatus(404);
   }
 }
 
@@ -57,20 +45,27 @@ export async function addDiarySpend(req, res) {
 
     const myFile = files.data.files;
 
-    const archive = myFile.find((i) => i.name === "Diario Janeiro");
+    const archive = myFile.find((i) => i.name === "Mais Novo Integrante");
     const document = await useServiceAccountAuth(archive.id);
     const sheetIndex = document.sheetsByIndex.findIndex(
-      (i) => i.title === "01-01"
+      (i) => i.title === "New Sheet"
     );
     if (sheetIndex === -1) {
       throw {
         message: "Sheet not found",
       };
     }
+    const colunaValorProcurado = "Despesa";
+    const valorProcurado = "Dízimo";
 
     const sheet = document.sheetsByIndex[sheetIndex];
-    const rows = await sheet.getRows();
-    console.log(rows[0]);
+    const rows = await sheet.getRows({
+      offset: 1,
+      limit: 100,
+      query: `${colunaValorProcurado} = "${valorProcurado}"`,
+    });
+
+    await sheet.setCell(rows[0]._rowNumber, "Valor_a_Pagar", 280);
     return res.send("ok");
   } catch (error) {
     return res.send(error);
