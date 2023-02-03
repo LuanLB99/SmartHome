@@ -10,11 +10,3 @@ async function addCredential(fileId, email, role) {
     },
   });
 }
-
-/* type: "user",
-      role: "owner",
-      emailAddres: "luanlealboni@gmail.com", */
-
-(async () => {
-  /* await addCredential(file.id, "luanlealboni@gmail.com", "writer"); */
-})();

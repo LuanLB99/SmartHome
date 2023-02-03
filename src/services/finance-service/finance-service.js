@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import drive, { useServiceAccountAuth } from "../auth-service/auth.js";
 
 export default async function addSpent(
@@ -24,16 +25,19 @@ export default async function addSpent(
       message: "Sheet not found",
     };
   }
+  const Data = dayjs().format("DD/MM/YYYY");
+  if (Forma_de_Pagamento === undefined) Forma_de_Pagamento = "PIX";
+  if (Nome_do_Favorecido === undefined) Nome_do_Favorecido = "Luan";
 
   try {
     const sheet = document.sheetsByIndex[sheetIndex];
     const rows = await sheet.getRows();
     const emptyRow = rows.findIndex((i) => i.Despesa === undefined);
     rows[emptyRow].Despesa = Despesa;
-    rows[emptyRow].Data_Pagamento = "01/02/2023";
-    rows[emptyRow].Forma_de_Pagamento = "Débito";
+    rows[emptyRow].Data_Pagamento = Data;
+    rows[emptyRow].Forma_de_Pagamento = Forma_de_Pagamento;
     rows[emptyRow].Valor = Valor;
-    rows[emptyRow].Nome_do_Favorecido = "Luan";
+    rows[emptyRow].Nome_do_Favorecido = Nome_do_Favorecido;
     await rows[emptyRow].save();
   } catch (error) {
     throw {
@@ -45,9 +49,9 @@ export default async function addSpent(
   return {
     Planilha: planilha,
     Despesa: Despesa,
-    Data: "01/02/2023",
-    Forma: "Débito",
+    Data: Data,
+    Forma: Forma_de_Pagamento,
     Valor: Valor,
-    Nome: "Luan",
+    Nome: Nome_do_Favorecido,
   };
 }
