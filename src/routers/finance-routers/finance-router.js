@@ -1,8 +1,8 @@
 import { Router } from "express";
 import {
   listSheets,
-  addDiarySpend,
   addNewSpent,
+  addNewInvest,
 } from "../../controllers/index.js";
 
 const financesRouter = Router();
@@ -10,6 +10,6 @@ const financesRouter = Router();
 financesRouter
   .get("/mySheets", listSheets)
   .post("/newSpent", addNewSpent)
-  .get("/diary", addDiarySpend);
+  .post("/newInvest", addNewInvest);
 
 export { financesRouter };

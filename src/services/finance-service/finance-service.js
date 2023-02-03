@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import drive, { useServiceAccountAuth } from "../auth-service/auth.js";
 
-export default async function addSpent(
+export async function addSpent(
   planilha,
   Despesa,
   Forma_de_Pagamento,
@@ -17,7 +17,7 @@ export default async function addSpent(
   const document = await useServiceAccountAuth(archive.id);
 
   const sheetIndex = document.sheetsByIndex.findIndex(
-    (i) => i.title === "New Sheet"
+    (i) => i.title === "Gastos"
   );
 
   if (sheetIndex === -1) {
@@ -53,5 +53,57 @@ export default async function addSpent(
     Forma: Forma_de_Pagamento,
     Valor: Valor,
     Nome: Nome_do_Favorecido,
+  };
+}
+
+export async function addInvest(
+  planilha,
+  Ativo,
+  Quantidade,
+  Preço,
+  Valor_Investido
+) {
+  const files = await drive.files.list();
+
+  const spreadsheet = files.data.files;
+
+  const archive = spreadsheet.find((i) => i.name === planilha);
+
+  const document = await useServiceAccountAuth(archive.id);
+
+  const sheetIndex = document.sheetsByIndex.findIndex(
+    (i) => i.title === "Investimentos"
+  );
+
+  if (sheetIndex === -1) {
+    throw {
+      message: "Sheet not found",
+    };
+  }
+  const Data = dayjs().format("DD/MM/YYYY");
+
+  try {
+    const sheet = document.sheetsByIndex[sheetIndex];
+    const rows = await sheet.getRows();
+    const emptyRow = rows.findIndex((i) => i.Ativo === undefined);
+    rows[emptyRow].Ativo = Ativo;
+    rows[emptyRow].Quantidade = Quantidade;
+    rows[emptyRow].Preço = Preço;
+    rows[emptyRow].Valor_Investido = Valor_Investido;
+    rows[emptyRow].Data_do_Investimento = Data;
+    await rows[emptyRow].save();
+  } catch (error) {
+    throw {
+      name: "Error to update row",
+      message: "Error to update new row",
+    };
+  }
+
+  return {
+    Ativo,
+    Quantidade,
+    Preço,
+    Valor_Investido,
+    Data,
   };
 }
