@@ -1,6 +1,4 @@
-import drive, {
-  useServiceAccountAuth,
-} from "../../services/auth-service/auth.js";
+import drive from "../../services/auth-service/auth.js";
 import { addSpent, addInvest } from "../../services/index.js";
 
 export async function listSheets(req, res) {
@@ -51,6 +49,9 @@ export async function addNewInvest(req, res) {
     );
     return res.send(newInvest);
   } catch (error) {
-    return res.send(error);
+    if (error.name === "Error to update row") {
+      return res.sendStatus(400);
+    }
+    return res.sendStatus(404);
   }
 }
