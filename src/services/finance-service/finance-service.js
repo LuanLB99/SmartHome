@@ -15,7 +15,6 @@ export async function addSpent(
   const archive = spreadsheet.find((i) => i.name === planilha);
 
   const document = await useServiceAccountAuth(archive.id);
-  console.log(document);
 
   const sheetIndex = document.sheetsByIndex.findIndex(
     (i) => i.title === "Gastos"
@@ -101,10 +100,10 @@ export async function addInvest(
   }
 
   return {
-    Ativo,
-    Quantidade,
-    Preço,
-    Valor_Investido,
-    Data,
+    Ativo: Ativo,
+    Quantidade: Quantidade,
+    Custo: Preço,
+    Valor: Valor_Investido,
+    Data: Data,
   };
 }
