@@ -8,7 +8,7 @@ A ideia da aplicação é ser integrada com o BixBy, para que as funções sejam
 ## Como rodar a aplicação back-end
 
 1. Clone esse repositório
-2. É necessário ter o docker instalado na sua máquina. Tendo o docker instalado na maquina, basta digitar:
+2. É necessário ter o docker instalado na sua máquina. Tendo o docker instalado na maquina, basta digitar no terminal, dentro da pasta raiz do projeto:
 
 `$ docker-compse up --build`
 
