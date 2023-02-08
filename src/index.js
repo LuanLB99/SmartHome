@@ -9,7 +9,7 @@ dotenv.config();
 app
   .use(cors())
   .use(express.json())
-  .get("/health", (_req, res) => res.send("NArutinho!"))
+  .get("/health", (_req, res) => res.send("OK"))
   .use("/finances", financesRouter);
 
 const port = process.env.PORT || 5000;
